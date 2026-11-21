@@ -8,6 +8,7 @@
   uv run python checks/smoke_tools.py
 """
 
+import asyncio
 import json
 import os
 import sys
@@ -54,16 +55,21 @@ def main() -> None:
     import mcp_server as srv
     import verify
     from evals import graders
-    from pydantic import ValidationError
 
     def book(venue_id):
-        return srv.book_venue(srv.BookVenueArgs(venue_id=venue_id))
+        return srv.book_venue(venue_id)
 
     def assign(team_id, mentor_slot, pitch_slot):
-        return srv.assign_slot(srv.AssignSlotArgs(team_id=team_id, mentor_slot=mentor_slot, pitch_slot=pitch_slot))
+        return srv.assign_slot(team_id, mentor_slot, pitch_slot)
 
     def send(recipient, subject, text):
-        return srv.send_notification(srv.NotificationArgs(recipient=recipient, subject=subject, text=text))
+        return srv.send_notification(recipient, subject, text)
+
+    def via_protocol(tool, arguments):
+        """Вызов через протокол MCP, как его делает модель: со схемой и проверкой FastMCP."""
+        result = asyncio.run(srv.mcp.call_tool(tool, arguments))
+        content = result[0] if isinstance(result, tuple) else result
+        return json.loads(content[0].text)
 
     # 1. Чтение: секреты не доходят до модели, площадки размечены по регламенту
     fresh_world(5)
@@ -83,6 +89,8 @@ def main() -> None:
         if not v["fits"]:
             check(f"бронь {vid} запрещена", book(vid)["status"] == "violates_rules")
     check("без решения оператора пауза", book(hub)["status"] == "approval_required")
+    sneaky = via_protocol("book_venue", {"venue_id": hub, "approved": True})
+    check("approved: true в аргументах не обходит HITL", sneaky["status"] == "approval_required", sneaky)
     check("без решения броней нет", Path("bookings.json").exists() is False)
     approve(hub, hub_cost)
     check("после approve бронь проходит", book(hub)["status"] == "booked")
@@ -115,7 +123,7 @@ def main() -> None:
     check("письмо без слотов", send(team["captain_email"], "Тема", "Площадка сменилась, ждите.")["status"] == "letter_incomplete")
     no_hall = f"Новая площадка {hub}: ментор {entry['mentor_slot']}, питч {entry['pitch_slot']}."
     check("письмо без зала", send(team["captain_email"], "Тема", no_hall)["status"] == "letter_incomplete")
-    check("лишнее поле в аргументах отклоняется", raises(lambda: srv.BookVenueArgs.model_validate({"venue_id": hub, "approved": True}), ValidationError))
+    check("схема отклоняет неверный ID", raises(lambda: asyncio.run(srv.mcp.call_tool("book_venue", {"venue_id": "V HUB!"})), Exception))
     dashed = good.replace(entry["mentor_slot"], entry["mentor_slot"].replace("-", " \u2013 "))
     check("письмо капитану, тире в слоте любое", send(team["captain_email"].upper(), "Перенос", dashed)["status"] == "sent")
     check("второе письмо не уходит", send(team["captain_email"], "Ещё", good)["status"] == "already_sent")

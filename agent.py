@@ -146,6 +146,19 @@ def server_env() -> dict[str, str]:
     return env
 
 
+SERVER_DOWN = ("connection closed", "closedresourceerror", "brokenresourceerror", "endofstream", "broken pipe")
+
+
+def tool_error_for_model(context, error: Exception) -> str:
+    """Ошибку вызова инструмента (пропущенный или неверный аргумент) я возвращаю модели, чтобы
+    она исправила вызов. Падение самого MCP-сервера пробрасываю дальше: это сбой процесса,
+    статус остаётся running, и следующий запуск продолжит работу."""
+    if any(mark in f"{type(error).__name__}: {error}".lower() for mark in SERVER_DOWN):
+        raise error
+    journal.write("tool_error", error=type(error).__name__, detail=str(error)[:300])
+    return f"Вызов не прошёл: {journal.redact(str(error))[:300]}. Проверь аргументы по схеме инструмента и вызови снова."
+
+
 def stop_on_approval(context, results) -> ToolsToFinalOutputResult:
     """Если бронь упёрлась в порог HITL, я заканчиваю прогон сразу, без лишних шагов модели."""
     for item in results:
@@ -168,7 +181,7 @@ async def run_agent(prompt: str, *, session_id: str, instructions: str, hooks: j
         cache_tools_list=True,
         client_session_timeout_seconds=30,
         tool_filter=create_static_tool_filter(allowed_tool_names=tools) if tools else None,
-        failure_error_function=None,  # падение сервера я не прячу от обвязки
+        failure_error_function=tool_error_for_model,  # ошибки аргументов модели, падение сервера обвязке
     )
     async with server:
         agent = Agent(

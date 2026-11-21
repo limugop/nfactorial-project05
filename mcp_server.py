@@ -5,8 +5,8 @@
 
 * модель видит только поля из белых списков (Pydantic-модели *View с extra="ignore"),
   поэтому служебные поля с секретами до неё не доходят, как бы они ни назывались;
-* аргументы каждого инструмента описаны Pydantic-моделью с extra="forbid": лишнее поле
-  вроде "approved": true отклоняется ещё до вызова;
+* аргументы каждого инструмента описаны Pydantic-моделями *Args: FastMCP строит по их полям
+  JSON-схему инструмента и проверяет каждый вызов до моего кода;
 * бронь: регламент площадки, бюджет, решение оператора из state.json, ключ идемпотентности;
 * слоты: трек, доступность у зала и ментора, пересечения по залам и менторам;
 * письма: домены, запрет ссылок и секретов, одно письмо на адрес и обязательное содержание
@@ -19,6 +19,7 @@ import json
 import re
 import threading
 from pathlib import Path
+from typing import Annotated
 
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -105,7 +106,11 @@ class SlotView(_View):
 
 
 # ---------------------------------------------------------------------------
-# Схемы аргументов. extra="forbid": модель не может подсунуть своё поле.
+# Схемы аргументов. Поля инструментов я беру прямо из этих моделей, поэтому ограничения
+# (шаблоны ID и слотов, длины) описаны в одном месте. Аргументы у инструментов плоские: со
+# вложенным объектом модель иногда забывала обёртку. Поле, которого нет в схеме (например,
+# "approved": true), FastMCP отбрасывает до моего кода, и оно ни на что не влияет: решение
+# оператора код берёт только из state.json.
 # ---------------------------------------------------------------------------
 class _Args(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
@@ -313,12 +318,12 @@ def get_roster() -> dict:
 
 
 @mcp.tool()
-def get_team_status(args: TeamRef) -> dict:
+def get_team_status(team_id: Annotated[str, TeamRef.model_fields["team_id"]]) -> dict:
     """Справка по одной команде: трек, прежние слоты, новые слоты (если назначены),
     отправлено ли ей письмо и общий статус задачи переноса. Ничего не меняет."""
-    team = next((t for t in _teams() if t.id == args.team_id), None)
+    team = next((t for t in _teams() if t.id == team_id), None)
     if team is None:
-        return _refuse("unknown_team", f"Команды {args.team_id} нет в списке")
+        return _refuse("unknown_team", f"Команды {team_id} нет в списке")
     entry = world.read_schedule().get(team.id)
     task = _task_state()
     return _ok(
@@ -337,11 +342,10 @@ def get_team_status(args: TeamRef) -> dict:
 # Действия во внешнем мире
 # ---------------------------------------------------------------------------
 @mcp.tool()
-def book_venue(args: BookVenueArgs) -> dict:
+def book_venue(venue_id: Annotated[str, BookVenueArgs.model_fields["venue_id"]]) -> dict:
     """Бронирует площадку. Код проверяет регламент и бюджет, решение оператора (HITL) из
     состояния задачи и ключ идемпотентности. Если нужна проверка человеком, бронь не
     делается и возвращается status=approval_required: тогда остановись и жди решения."""
-    venue_id = args.venue_id
     with WRITE_LOCK:
         cfg = _config()
         venue = next((v for v in _venues() if v.id == venue_id), None)
@@ -409,11 +413,14 @@ def book_venue(args: BookVenueArgs) -> dict:
 
 
 @mcp.tool()
-def assign_slot(args: AssignSlotArgs) -> dict:
+def assign_slot(
+    team_id: Annotated[str, AssignSlotArgs.model_fields["team_id"]],
+    mentor_slot: Annotated[str, AssignSlotArgs.model_fields["mentor_slot"]],
+    pitch_slot: Annotated[str, AssignSlotArgs.model_fields["pitch_slot"]],
+) -> dict:
     """Назначает команде слот менторской сессии и слот питча на забронированной площадке.
     Зал и ментора своего трека подбирает код. Код проверяет доступность слотов у зала и
     ментора и пересечения с другими командами по залам и менторам."""
-    team_id, mentor_slot, pitch_slot = args.team_id, args.mentor_slot, args.pitch_slot
     with WRITE_LOCK:
         team = next((t for t in _teams() if t.id == team_id), None)
         if team is None:
@@ -495,14 +502,17 @@ def assign_slot(args: AssignSlotArgs) -> dict:
 
 
 @mcp.tool()
-def send_notification(args: NotificationArgs) -> dict:
+def send_notification(
+    recipient: Annotated[str, NotificationArgs.model_fields["recipient"]],
+    subject: Annotated[str, NotificationArgs.model_fields["subject"]],
+    text: Annotated[str, NotificationArgs.model_fields["text"]],
+) -> dict:
     """Отправляет одно итоговое письмо. Код пропускает только адреса разрешённых доменов,
     запрещает ссылки и секреты и не отправляет второе письмо тому же адресату. Письмо
     капитану и ментору должно содержать новую площадку, зал и слоты целиком."""
-    subject, text = args.subject, args.text
     with WRITE_LOCK:
         cfg = _config()
-        address = args.recipient
+        address = recipient.strip()
         match = EMAIL_RE.match(address)
         if not match:
             return _refuse("bad_address", f"Это не похоже на адрес почты: {address}")

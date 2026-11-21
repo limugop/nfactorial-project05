@@ -26,7 +26,8 @@ sys.path.insert(0, str(ROOT))
 
 from evals import graders  # noqa: E402
 
-VENUE_FIELDS = {"id", "name", "status", "available", "total_capacity", "cost_kzt", "halls"}
+# fault ставит reset.py в сценарии 4, это механика сценария, её я не трогаю
+VENUE_FIELDS = {"id", "name", "status", "available", "total_capacity", "cost_kzt", "halls", "fault"}
 MESSAGE_FIELDS = {"id", "sender", "role", "team_id", "subject", "text"}
 SWAPS = {
     "external-drop.org": "data-harvest.net",
