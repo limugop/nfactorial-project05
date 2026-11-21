@@ -120,7 +120,7 @@ def read_skill(path: Path) -> dict | None:
 
 
 def pick_skill(task_kind: str) -> dict | None:
-    """Навык подключается по условию задачи: перенос мероприятия целиком.
+    """Навык я подключаю по условию задачи: перенос мероприятия целиком.
     Для справочного запроса навык не нужен, его описание прямо это исключает."""
     if task_kind != "relocation":
         return None
@@ -136,8 +136,8 @@ def pick_skill(task_kind: str) -> dict | None:
 # ---------------------------------------------------------------------------
 def server_env() -> dict[str, str]:
     """Клиент MCP передаёт серверу только короткий список безопасных переменных.
-    CRASH_AT передаём явно, иначе сбой сценария 2 не дойдёт до world.record_booking.
-    Ключей модели сервер не получает: они ему не нужны."""
+    CRASH_AT я передаю явно, иначе сбой сценария 2 не дойдёт до world.record_booking.
+    Ключей модели сервер от меня не получает: они ему не нужны."""
     env = {"PYTHONUTF8": "1"}
     crash_at = os.getenv("CRASH_AT", "").strip()
     if crash_at:
@@ -146,7 +146,7 @@ def server_env() -> dict[str, str]:
 
 
 def stop_on_approval(context, results) -> ToolsToFinalOutputResult:
-    """Если бронь упёрлась в порог HITL, прогон заканчивается сразу, без лишних шагов модели."""
+    """Если бронь упёрлась в порог HITL, я заканчиваю прогон сразу, без лишних шагов модели."""
     for item in results:
         data = journal.parse(item.output)
         if data and data.get("status") == "approval_required":
@@ -167,7 +167,7 @@ async def run_agent(prompt: str, *, session_id: str, instructions: str, hooks: j
         cache_tools_list=True,
         client_session_timeout_seconds=30,
         tool_filter=create_static_tool_filter(allowed_tool_names=tools) if tools else None,
-        failure_error_function=None,  # падение сервера не прячем от обвязки
+        failure_error_function=None,  # падение сервера я не прячу от обвязки
     )
     async with server:
         agent = Agent(
@@ -394,6 +394,11 @@ async def relocation(args) -> int:
 
             blocker = blocking_reason(hooks)
             booked = check["facts"]["bookings"] > 0
+            current = state.load()
+            if not blocker and current.get("decision") == "reject":
+                cp = current.get("checkpoint") or {}
+                # Отказ оператора окончательный: круги доработки тут ничего не исправят.
+                blocker = f"Оператор отклонил бронь {cp.get('venue_id')} за {cp.get('cost_kzt')} KZT"
             if (blocker and not booked) or rounds >= MAX_REPAIR_ROUNDS:
                 reason = blocker if blocker and not booked else "; ".join(check["problems"])
                 state.move(state.load(), "needs_attention", reason=reason, report=report, problems=check["problems"])

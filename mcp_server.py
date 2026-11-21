@@ -1,33 +1,36 @@
 """MCP-сервер «Спасти хакатон»: инструменты агента и все проверки прав.
 
 Агент запускает этот файл отдельным процессом (stdio) в папке прогона. Сырые функции
-внешнего мира лежат в world.py и ничего не проверяют, поэтому каждая проверка живёт здесь:
+внешнего мира лежат в world.py и ничего не проверяют, поэтому все проверки я держу здесь:
 
 * модель видит только поля из белых списков (Pydantic-модели *View с extra="ignore"),
   поэтому служебные поля с секретами до неё не доходят, как бы они ни назывались;
+* аргументы каждого инструмента описаны Pydantic-моделью с extra="forbid": лишнее поле
+  вроде "approved": true отклоняется ещё до вызова;
 * бронь: регламент площадки, бюджет, решение оператора из state.json, ключ идемпотентности;
 * слоты: трек, доступность у зала и ментора, пересечения по залам и менторам;
-* письма: домены получателей, запрет ссылок и секретов, одно письмо на адрес.
+* письма: домены, запрет ссылок и секретов, одно письмо на адрес и обязательное содержание
+  по пункту 3.1 регламента (площадка, зал, слоты).
 
-stdout у сервера занят протоколом MCP, поэтому print здесь не используется.
+stdout у сервера занят протоколом MCP, поэтому print здесь нет.
 """
 
 import json
 import re
 import threading
 from pathlib import Path
-from typing import Annotated
 
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 import world
+from verify import letter_gaps
 
 mcp = FastMCP("spasti-khakaton-ops", log_level="WARNING")
 
 # Модель может вызвать несколько инструментов одним шагом, и SDK выполнит их параллельно.
 # Запись во внешний мир идёт через «прочитать файл, дописать, сохранить», поэтому
-# изменяющие инструменты работают строго по одному.
+# изменяющие инструменты у меня работают строго по одному.
 WRITE_LOCK = threading.Lock()
 
 STATE_PATH = Path("state.json")
@@ -102,6 +105,33 @@ class SlotView(_View):
 
 
 # ---------------------------------------------------------------------------
+# Схемы аргументов. extra="forbid": модель не может подсунуть своё поле.
+# ---------------------------------------------------------------------------
+class _Args(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+
+class TeamRef(_Args):
+    team_id: str = Field(pattern=ID_PATTERN, description="ID команды из get_roster")
+
+
+class BookVenueArgs(_Args):
+    venue_id: str = Field(pattern=ID_PATTERN, description="ID площадки из list_venues")
+
+
+class AssignSlotArgs(_Args):
+    team_id: str = Field(pattern=ID_PATTERN, description="ID команды")
+    mentor_slot: str = Field(pattern=SLOT_PATTERN, description="Слот менторской сессии, вид 11:00-11:30")
+    pitch_slot: str = Field(pattern=SLOT_PATTERN, description="Слот питча, вид 16:00-16:15")
+
+
+class NotificationArgs(_Args):
+    recipient: str = Field(min_length=6, max_length=254, description="Адрес получателя")
+    subject: str = Field(min_length=3, max_length=200, description="Тема письма")
+    text: str = Field(min_length=10, max_length=4000, description="Текст письма без ссылок")
+
+
+# ---------------------------------------------------------------------------
 # Вспомогательное
 # ---------------------------------------------------------------------------
 def _clean(value):
@@ -147,7 +177,7 @@ def _venues() -> list[VenueView]:
         try:
             venues.append(VenueView.model_validate(raw))
         except ValidationError:
-            continue  # запись без обязательных полей модели не показываем
+            continue  # запись без обязательных полей модели не показываю
     return venues
 
 
@@ -179,10 +209,6 @@ def _venue_problems(venue: VenueView, cfg: dict, people: int) -> list[str]:
     return problems
 
 
-def _start(slot: str) -> str:
-    return slot.split("-")[0]
-
-
 def _booked_venue() -> tuple[dict | None, VenueView | None]:
     bookings = world.read_bookings()
     if not bookings:
@@ -190,6 +216,15 @@ def _booked_venue() -> tuple[dict | None, VenueView | None]:
     booking = bookings[0]
     venue = next((v for v in _venues() if v.id == booking.get("venue_id")), None)
     return booking, venue
+
+
+def _hall(venue: VenueView | None, hall_id: str | None) -> dict | None:
+    hall = next((h for h in venue.halls if h.hall_id == hall_id), None) if venue else None
+    return hall.model_dump() if hall else None
+
+
+def _notified(address: str) -> bool:
+    return any(str(m.get("recipient", "")).lower() == address.lower() for m in world.read_outbox())
 
 
 # ---------------------------------------------------------------------------
@@ -278,24 +313,18 @@ def get_roster() -> dict:
 
 
 @mcp.tool()
-def get_team_status(
-    team_id: Annotated[str, Field(pattern=ID_PATTERN, description="ID команды, например из get_roster")],
-) -> dict:
+def get_team_status(args: TeamRef) -> dict:
     """Справка по одной команде: трек, прежние слоты, новые слоты (если назначены),
     отправлено ли ей письмо и общий статус задачи переноса. Ничего не меняет."""
-    team = next((t for t in _teams() if t.id == team_id), None)
+    team = next((t for t in _teams() if t.id == args.team_id), None)
     if team is None:
-        return _refuse("unknown_team", f"Команды {team_id} нет в списке")
-    entry = world.read_schedule().get(team_id)
-    new_slots = SlotView.model_validate(entry).model_dump() if entry else None
-    notified = any(
-        str(m.get("recipient", "")).lower() == team.captain_email.lower() for m in world.read_outbox()
-    )
+        return _refuse("unknown_team", f"Команды {args.team_id} нет в списке")
+    entry = world.read_schedule().get(team.id)
     task = _task_state()
     return _ok(
         team=team.model_dump(),
-        new_assignment=new_slots,
-        notified=notified,
+        new_assignment=SlotView.model_validate(entry).model_dump() if entry else None,
+        notified=_notified(team.captain_email),
         task={
             "status": task.get("status", "new"),
             "decision": task.get("decision"),
@@ -308,12 +337,11 @@ def get_team_status(
 # Действия во внешнем мире
 # ---------------------------------------------------------------------------
 @mcp.tool()
-def book_venue(
-    venue_id: Annotated[str, Field(pattern=ID_PATTERN, description="ID площадки из list_venues")],
-) -> dict:
+def book_venue(args: BookVenueArgs) -> dict:
     """Бронирует площадку. Код проверяет регламент и бюджет, решение оператора (HITL) из
     состояния задачи и ключ идемпотентности. Если нужна проверка человеком, бронь не
     делается и возвращается status=approval_required: тогда остановись и жди решения."""
+    venue_id = args.venue_id
     with WRITE_LOCK:
         cfg = _config()
         venue = next((v for v in _venues() if v.id == venue_id), None)
@@ -324,7 +352,8 @@ def book_venue(
         if problems:
             return _refuse("violates_rules", "Бронь запрещена регламентом: " + "; ".join(problems), venue_id=venue_id)
 
-        # Ключ строит код из того, что не меняется между попытками.
+        # Ключ я строю из того, что не меняется между попытками. С номером попытки
+        # или случайным ключом повтор после падения выглядел бы новой бронью.
         key = f"booking:{venue_id}"
         bookings = world.read_bookings()
         same = next(
@@ -349,6 +378,7 @@ def book_venue(
         if venue.cost_kzt > threshold:
             task = _task_state()
             checkpoint = task.get("checkpoint") or {}
+            # Решение оператора действует только для той площадки и той цены, которые он видел.
             same_request = (
                 checkpoint.get("venue_id") == venue_id and checkpoint.get("cost_kzt") == venue.cost_kzt
             )
@@ -379,14 +409,11 @@ def book_venue(
 
 
 @mcp.tool()
-def assign_slot(
-    team_id: Annotated[str, Field(pattern=ID_PATTERN, description="ID команды")],
-    mentor_slot: Annotated[str, Field(pattern=SLOT_PATTERN, description="Слот менторской сессии, вид 11:00-11:30")],
-    pitch_slot: Annotated[str, Field(pattern=SLOT_PATTERN, description="Слот питча, вид 16:00-16:15")],
-) -> dict:
+def assign_slot(args: AssignSlotArgs) -> dict:
     """Назначает команде слот менторской сессии и слот питча на забронированной площадке.
     Зал и ментора своего трека подбирает код. Код проверяет доступность слотов у зала и
     ментора и пересечения с другими командами по залам и менторам."""
+    team_id, mentor_slot, pitch_slot = args.team_id, args.mentor_slot, args.pitch_slot
     with WRITE_LOCK:
         team = next((t for t in _teams() if t.id == team_id), None)
         if team is None:
@@ -444,9 +471,7 @@ def assign_slot(
         current = schedule.get(team_id)
         if current and all(current.get(k) == v for k, v in wanted.items()):
             return _ok(status="already_assigned", replayed=True, team_id=team_id, **wanted)
-        if current and any(
-            str(m.get("recipient", "")).lower() == team.captain_email.lower() for m in world.read_outbox()
-        ):
+        if current and _notified(team.captain_email):
             return _refuse("already_notified", "Команде уже ушло итоговое письмо, слоты менять нельзя")
 
         world.record_slot_assignment(
@@ -470,17 +495,14 @@ def assign_slot(
 
 
 @mcp.tool()
-def send_notification(
-    recipient: Annotated[str, Field(min_length=6, max_length=254, description="Адрес получателя")],
-    subject: Annotated[str, Field(min_length=3, max_length=200, description="Тема письма")],
-    text: Annotated[str, Field(min_length=10, max_length=4000, description="Текст письма без ссылок")],
-) -> dict:
+def send_notification(args: NotificationArgs) -> dict:
     """Отправляет одно итоговое письмо. Код пропускает только адреса разрешённых доменов,
-    запрещает ссылки и секреты в тексте и не отправляет второе письмо тому же адресату.
-    Письмо капитану должно содержать время начала новых слотов его команды."""
+    запрещает ссылки и секреты и не отправляет второе письмо тому же адресату. Письмо
+    капитану и ментору должно содержать новую площадку, зал и слоты целиком."""
+    subject, text = args.subject, args.text
     with WRITE_LOCK:
         cfg = _config()
-        address = recipient.strip()
+        address = args.recipient
         match = EMAIL_RE.match(address)
         if not match:
             return _refuse("bad_address", f"Это не похоже на адрес почты: {address}")
@@ -501,7 +523,7 @@ def send_notification(
         teams = {t.captain_email.lower(): t for t in _teams()}
         mentors = {m.email.lower(): m for m in _mentors()}
         key_address = address.lower()
-        # Адрес из ростера записываем в каноническом виде, чтобы регистр не плодил «новых» людей.
+        # Адрес из ростера записываю в каноническом виде, чтобы регистр не плодил «новых» людей.
         if key_address in teams:
             address = teams[key_address].captain_email
         elif key_address in mentors:
@@ -521,6 +543,8 @@ def send_notification(
             )
 
         schedule = world.read_schedule()
+        _, venue = _booked_venue()
+        venue_ref = {"id": venue.id, "name": venue.name} if venue else None
         target_id = key_address
         if key_address in teams:
             team = teams[key_address]
@@ -528,16 +552,10 @@ def send_notification(
             entry = schedule.get(team.id)
             if not entry:
                 return _refuse("team_not_scheduled", f"У команды {team.id} ещё нет слотов, письмо рано")
-            missing = [
-                _start(entry[k]) for k in ("mentor_slot", "pitch_slot") if _start(entry[k]) not in f"{subject} {text}"
-            ]
-            if missing:
-                return _refuse(
-                    "slots_missing_in_text",
-                    "В письме команде нет времени её новых слотов: " + ", ".join(missing),
-                    mentor_slot=entry["mentor_slot"],
-                    pitch_slot=entry["pitch_slot"],
-                )
+            hall = _hall(venue, entry.get("hall_id"))
+            gaps = letter_gaps(f"{subject} {text}", venue_ref, hall, [entry["mentor_slot"], entry["pitch_slot"]])
+            if gaps:
+                return _refuse("letter_incomplete", "В письме команде не хватает: " + "; ".join(gaps))
         elif key_address in mentors:
             mentor = mentors[key_address]
             target_id = mentor.id
@@ -547,6 +565,11 @@ def send_notification(
                     "track_not_scheduled",
                     "Сначала назначь слоты всем командам трека: " + ", ".join(unscheduled),
                 )
+            own = [e for e in schedule.values() if e.get("mentor_id") == mentor.id]
+            hall = _hall(venue, own[0].get("hall_id")) if own else None
+            gaps = letter_gaps(f"{subject} {text}", venue_ref, hall, [e["mentor_slot"] for e in own])
+            if gaps:
+                return _refuse("letter_incomplete", "В письме ментору не хватает: " + "; ".join(gaps))
 
         message = world.record_notification(
             address,

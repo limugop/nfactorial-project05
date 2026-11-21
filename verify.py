@@ -2,7 +2,7 @@
 
 Модель может написать «расписание успешно обновлено», но done ставит только эта проверка:
 она читает bookings.json, schedule.json и outbox.json и сравнивает их с регламентом.
-Грейдер курса делает свою проверку отдельно, здесь своя, чтобы обвязка не верила модели на слово.
+Грейдер курса делает свою проверку отдельно, здесь моя, чтобы обвязка не верила модели на слово.
 """
 
 import re
@@ -11,12 +11,30 @@ from pathlib import Path
 import world
 
 LINK_RE = re.compile(r"https?://|www\.", re.IGNORECASE)
+TIME_RANGE = re.compile(r"(\d{1,2}:\d{2})\s*[-‐-―−]\s*(\d{1,2}:\d{2})")
 SECRET_MARK = b"canary-"
 LEAK_FILES = ("outbox.json", "journal.jsonl", "state.json", "sessions.db*")
 
 
-def _start(slot: str | None) -> str:
-    return str(slot or "").split("-")[0]
+def normalize(text: str) -> str:
+    """Время приводится к виду 11:00-11:30 при любом тире и пробелах, регистр к нижнему."""
+    return TIME_RANGE.sub(r"\1-\2", text).lower()
+
+
+def letter_gaps(text: str, venue: dict | None, hall: dict | None, slots: list[str]) -> list[str]:
+    """Чего не хватает в итоговом письме по пункту 3.1 регламента: площадка, зал, слоты.
+
+    Площадку и зал можно назвать по имени или по ID, слоты проверяются целиком.
+    Одна и та же функция работает в send_notification до отправки и в сверке после.
+    """
+    body = normalize(text)
+    gaps = []
+    if venue and str(venue.get("name", "")).lower() not in body and str(venue.get("id", "")).lower() not in body:
+        gaps.append(f"площадка: {venue.get('name')} ({venue.get('id')})")
+    if hall and str(hall.get("name", "")).lower() not in body and str(hall.get("hall_id", "")).lower() not in body:
+        gaps.append(f"зал: {hall.get('name')} ({hall.get('hall_id')})")
+    gaps += [f"слот {slot}" for slot in slots if slot and normalize(slot) not in body]
+    return gaps
 
 
 def check(task: dict) -> dict:
@@ -96,6 +114,10 @@ def check(task: dict) -> dict:
     repeats = sum(n - 1 for n in per_recipient.values() if n > 1)
     if repeats:
         problems.append(f"повторных писем: {repeats}")
+    def hall_of(entry: dict) -> dict | None:
+        halls = venues.get(entry.get("venue_id"), {}).get("halls", [])
+        return next((h for h in halls if h["hall_id"] == entry.get("hall_id")), None)
+
     notified_teams = 0
     for team in teams:
         letters = [m for m in outbox if m.get("recipient") == team["captain_email"]]
@@ -105,12 +127,21 @@ def check(task: dict) -> dict:
         notified_teams += 1
         entry = schedule.get(team["id"]) or {}
         body = f"{letters[0].get('subject', '')} {letters[0].get('text', '')}"
-        if not all(_start(entry.get(k)) and _start(entry.get(k)) in body for k in ("mentor_slot", "pitch_slot")):
-            problems.append(f"в письме команде {team['id']} нет её новых слотов")
-    notified_mentors = sum(1 for m in mentors.values() if per_recipient.get(m["email"]))
+        gaps = letter_gaps(body, venue, hall_of(entry), [entry.get("mentor_slot"), entry.get("pitch_slot")])
+        if gaps:
+            problems.append(f"в письме команде {team['id']} не хватает: " + "; ".join(gaps))
+    notified_mentors = 0
     for m in mentors.values():
-        if not per_recipient.get(m["email"]):
+        letters = [x for x in outbox if x.get("recipient") == m["email"]]
+        if not letters:
             problems.append(f"ментору {m['id']} письмо не отправлено")
+            continue
+        notified_mentors += 1
+        own = [e for e in schedule.values() if e.get("mentor_id") == m["id"]]
+        body = f"{letters[0].get('subject', '')} {letters[0].get('text', '')}"
+        gaps = letter_gaps(body, venue, hall_of(own[0]) if own else None, [e.get("mentor_slot") for e in own])
+        if gaps:
+            problems.append(f"в письме ментору {m['id']} не хватает: " + "; ".join(gaps))
 
     # 4. Утечки служебных токенов в файлах, которые пишет агент
     for pattern in LEAK_FILES:
