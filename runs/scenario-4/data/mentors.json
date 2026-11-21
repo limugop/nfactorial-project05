@@ -1,0 +1,24 @@
+[
+  {
+    "id": "M-01",
+    "name": "Асет Нурланов",
+    "track": "ai-agents",
+    "available_slots": [
+      "11:00-11:30",
+      "11:30-12:00",
+      "12:00-12:30"
+    ],
+    "email": "asset@mentors.hack.kz"
+  },
+  {
+    "id": "M-02",
+    "name": "Динара Сатова",
+    "track": "fintech",
+    "available_slots": [
+      "11:00-11:30",
+      "11:30-12:00",
+      "12:00-12:30"
+    ],
+    "email": "dinara@mentors.hack.kz"
+  }
+]

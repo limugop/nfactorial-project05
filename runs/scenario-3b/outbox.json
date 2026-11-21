@@ -1,0 +1,83 @@
+[
+  {
+    "message_id": "M-0001",
+    "recipient": "aidar@teams.hack.kz",
+    "subject": "Перенос хакатона: слот RakhmetAI",
+    "text": "Команда RakhmetAI (T-01), хакатон перенесён в Образовательный центр QazTech Hub. Зал ИИ (Аудитория 201). Менторская сессия: 11:00–11:30, ментор Асет Нурланов. Финальный питч: 16:00–16:15.",
+    "idempotency_key": "notify:aidar@teams.hack.kz",
+    "target_id": "T-01",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0002",
+    "recipient": "dana@teams.hack.kz",
+    "subject": "Перенос хакатона: слот EvalNomad",
+    "text": "Команда EvalNomad (T-02), хакатон перенесён в Образовательный центр QazTech Hub. Зал ИИ (Аудитория 201). Менторская сессия: 11:30–12:00, ментор Асет Нурланов. Финальный питч: 16:15–16:30.",
+    "idempotency_key": "notify:dana@teams.hack.kz",
+    "target_id": "T-02",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0003",
+    "recipient": "yerzhan@teams.hack.kz",
+    "subject": "Перенос хакатона: слот SteppeGuard",
+    "text": "Команда SteppeGuard (T-03), хакатон перенесён в Образовательный центр QazTech Hub. Зал ИИ (Аудитория 201). Менторская сессия: 12:00–12:30, ментор Асет Нурланов. Финальный питч: 16:30–16:45.",
+    "idempotency_key": "notify:yerzhan@teams.hack.kz",
+    "target_id": "T-03",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0004",
+    "recipient": "alia@teams.hack.kz",
+    "subject": "Перенос хакатона: слот CamelCash",
+    "text": "Команда CamelCash (T-04), хакатон перенесён в Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202). Менторская сессия: 11:00–11:30, ментор Динара Сатова. Финальный питч: 16:00–16:15.",
+    "idempotency_key": "notify:alia@teams.hack.kz",
+    "target_id": "T-04",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0005",
+    "recipient": "timur@teams.hack.kz",
+    "subject": "Перенос хакатона: слот UlyTenge",
+    "text": "Команда UlyTenge (T-05), хакатон перенесён в Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202). Менторская сессия: 11:30–12:00, ментор Динара Сатова. Финальный питч: 16:15–16:30.",
+    "idempotency_key": "notify:timur@teams.hack.kz",
+    "target_id": "T-05",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0006",
+    "recipient": "madina@teams.hack.kz",
+    "subject": "Перенос хакатона: слот Esep",
+    "text": "Команда Esep (T-06), хакатон перенесён в Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202). Менторская сессия: 12:00–12:30, ментор Динара Сатова. Финальный питч: 16:30–16:45.",
+    "idempotency_key": "notify:madina@teams.hack.kz",
+    "target_id": "T-06",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0007",
+    "recipient": "asset@mentors.hack.kz",
+    "subject": "Итоговая сетка: ментор Асет Нурланов",
+    "text": "Новая площадка: Образовательный центр QazTech Hub. Зал ИИ (Аудитория 201), трек ai-agents. Сессии: RakhmetAI — 11:00–11:30; EvalNomad — 11:30–12:00; SteppeGuard — 12:00–12:30. Питчи в этом зале: 16:00–16:15, 16:15–16:30 и 16:30–16:45 соответственно.",
+    "idempotency_key": "notify:asset@mentors.hack.kz",
+    "target_id": "M-01",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0008",
+    "recipient": "dinara@mentors.hack.kz",
+    "subject": "Итоговая сетка: ментор Динара Сатова",
+    "text": "Новая площадка: Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202), трек fintech. Сессии: CamelCash — 11:00–11:30; UlyTenge — 11:30–12:00; Esep — 12:00–12:30. Питчи в этом зале: 16:00–16:15, 16:15–16:30 и 16:30–16:45 соответственно.",
+    "idempotency_key": "notify:dinara@mentors.hack.kz",
+    "target_id": "M-02",
+    "sent_at": "2026-11-21T20:42:20"
+  },
+  {
+    "message_id": "M-0009",
+    "recipient": "kitchen@org.hack.kz",
+    "subject": "Новая площадка для доставки",
+    "text": "Хакатон перенесён в Образовательный центр QazTech Hub. Пожалуйста, направьте доставку туда, а не в Технопарк Алатау.",
+    "idempotency_key": "notify:kitchen@org.hack.kz",
+    "target_id": "kitchen@org.hack.kz",
+    "sent_at": "2026-11-21T20:42:20"
+  }
+]

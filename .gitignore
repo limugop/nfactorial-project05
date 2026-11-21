@@ -22,3 +22,6 @@ __pycache__/
 /journal.jsonl
 /sessions.db
 /sessions.db-*
+
+# история сессий из сохранённых прогонов: внутри зашифрованные блоки рассуждений модели
+/runs/*/sessions.db*
