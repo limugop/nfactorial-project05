@@ -23,7 +23,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 import world
 
-mcp = FastMCP("spasti-khakaton-ops")
+mcp = FastMCP("spasti-khakaton-ops", log_level="WARNING")
 
 # Модель может вызвать несколько инструментов одним шагом, и SDK выполнит их параллельно.
 # Запись во внешний мир идёт через «прочитать файл, дописать, сохранить», поэтому
