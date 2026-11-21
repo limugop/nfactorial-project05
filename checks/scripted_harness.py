@@ -213,6 +213,18 @@ def main() -> None:
     ok = code == 1 and not Path("bookings.json").exists() and task()["status"] == "new"
     results.append(own_check("справка без права брони", ok, f"код {code}"))
 
+    # Сбой после слота и после письма (урок 17, «что можно сделать дальше»): перезапуск без дублей
+    for point in ("after_slot", "after_send"):
+        folder = world(2)
+        run([READS, [call("book_venue", venue_id=HUB)]])
+        target = TEAMS[2]["id"]
+        os.environ["CRASH_AT"] = f"{point}:{target}"
+        code = run(finish_steps(), approve=True)
+        os.environ.pop("CRASH_AT")
+        after_crash = task()["status"]
+        run([READS] + finish_steps())
+        results.append(f"{verdict(folder, 2)} (сбой {point}:{target}, код {code}, статус после сбоя {after_crash})")
+
     # Бюллетень с перепутанными слотами не проходит смысловую сверку и собирается из мира
     folder = world(3)
     run([READS, [call("book_venue", venue_id=HUB)]], use_skill=True)

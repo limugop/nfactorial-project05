@@ -1,0 +1,83 @@
+[
+  {
+    "message_id": "M-0001",
+    "recipient": "aidar@teams.hack.kz",
+    "subject": "Итоговый перенос: RakhmetAI",
+    "text": "Хакатон перенесён в Образовательный центр QazTech Hub. Команда RakhmetAI (ai-agents), зал H-HUB-AI — Зал ИИ (Аудитория 201). Менторская сессия: 11:00-11:30. Питч: 16:00-16:15.",
+    "idempotency_key": "notify:aidar@teams.hack.kz",
+    "target_id": "T-01",
+    "sent_at": "2026-11-21T21:33:44"
+  },
+  {
+    "message_id": "M-0002",
+    "recipient": "dana@teams.hack.kz",
+    "subject": "Итоговый перенос: EvalNomad",
+    "text": "Хакатон перенесён в Образовательный центр QazTech Hub. Команда EvalNomad (ai-agents), зал H-HUB-AI — Зал ИИ (Аудитория 201). Менторская сессия: 11:30-12:00. Питч: 16:15-16:30.",
+    "idempotency_key": "notify:dana@teams.hack.kz",
+    "target_id": "T-02",
+    "sent_at": "2026-11-21T21:33:44"
+  },
+  {
+    "message_id": "M-0003",
+    "recipient": "yerzhan@teams.hack.kz",
+    "subject": "Итоговый перенос: SteppeGuard",
+    "text": "Хакатон перенесён в Образовательный центр QazTech Hub. Команда SteppeGuard (ai-agents), зал H-HUB-AI — Зал ИИ (Аудитория 201). Менторская сессия: 12:00-12:30. Питч: 16:30-16:45.",
+    "idempotency_key": "notify:yerzhan@teams.hack.kz",
+    "target_id": "T-03",
+    "sent_at": "2026-11-21T21:33:44"
+  },
+  {
+    "message_id": "M-0004",
+    "recipient": "alia@teams.hack.kz",
+    "subject": "Итоговый перенос: CamelCash",
+    "text": "Команда CamelCash (T-04): новая площадка — Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202). Менторская сессия: 11:00-11:30. Питч: 16:00-16:15.",
+    "idempotency_key": "notify:alia@teams.hack.kz",
+    "target_id": "T-04",
+    "sent_at": "2026-11-21T21:34:04"
+  },
+  {
+    "message_id": "M-0005",
+    "recipient": "timur@teams.hack.kz",
+    "subject": "Итоговый перенос: UlyTenge",
+    "text": "Команда UlyTenge (T-05): новая площадка — Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202). Менторская сессия: 11:30-12:00. Питч: 16:15-16:30.",
+    "idempotency_key": "notify:timur@teams.hack.kz",
+    "target_id": "T-05",
+    "sent_at": "2026-11-21T21:34:04"
+  },
+  {
+    "message_id": "M-0006",
+    "recipient": "madina@teams.hack.kz",
+    "subject": "Итоговый перенос: Esep",
+    "text": "Команда Esep (T-06): новая площадка — Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202). Менторская сессия: 12:00-12:30. Питч: 16:30-16:45.",
+    "idempotency_key": "notify:madina@teams.hack.kz",
+    "target_id": "T-06",
+    "sent_at": "2026-11-21T21:34:04"
+  },
+  {
+    "message_id": "M-0007",
+    "recipient": "asset@mentors.hack.kz",
+    "subject": "Итоговая сетка ментора: Асет Нурланов",
+    "text": "Новая площадка — Образовательный центр QazTech Hub. Зал ИИ (Аудитория 201). Сессии: RakhmetAI (T-01) — 11:00-11:30; EvalNomad (T-02) — 11:30-12:00; SteppeGuard (T-03) — 12:00-12:30.",
+    "idempotency_key": "notify:asset@mentors.hack.kz",
+    "target_id": "M-01",
+    "sent_at": "2026-11-21T21:34:04"
+  },
+  {
+    "message_id": "M-0008",
+    "recipient": "dinara@mentors.hack.kz",
+    "subject": "Итоговая сетка ментора: Динара Сатова",
+    "text": "Новая площадка — Образовательный центр QazTech Hub. Зал Финтех (Аудитория 202). Сессии: CamelCash (T-04) — 11:00-11:30; UlyTenge (T-05) — 11:30-12:00; Esep (T-06) — 12:00-12:30.",
+    "idempotency_key": "notify:dinara@mentors.hack.kz",
+    "target_id": "M-02",
+    "sent_at": "2026-11-21T21:34:04"
+  },
+  {
+    "message_id": "M-0009",
+    "recipient": "kitchen@org.hack.kz",
+    "subject": "Новая площадка мероприятия",
+    "text": "Новая площадка мероприятия: Образовательный центр QazTech Hub.",
+    "idempotency_key": "notify:kitchen@org.hack.kz",
+    "target_id": "kitchen@org.hack.kz",
+    "sent_at": "2026-11-21T21:34:04"
+  }
+]
