@@ -159,6 +159,7 @@ def check(task: dict) -> dict:
         "conflicts": conflicts,
         "notified_teams": notified_teams,
         "notified_mentors": notified_mentors,
+        "mentors_total": len(mentors),
         "letters_total": len(outbox),
         "repeats": repeats,
     }
@@ -184,7 +185,7 @@ def bulletin_from_world(task: dict, facts: dict) -> str:
         f"Конфликтов расписания: {facts['conflicts']}",
         "",
         "[СТАТУС РАССЫЛКИ]",
-        f"Командам: {facts['notified_teams']} из {facts['teams_total']}, менторам: {facts['notified_mentors']}, "
+        f"Командам: {facts['notified_teams']} из {facts['teams_total']}, менторам: {facts['notified_mentors']} из {facts['mentors_total']}, "
         f"всего писем: {facts['letters_total']}, повторов: {facts['repeats']}",
     ]
     return "\n".join(lines)

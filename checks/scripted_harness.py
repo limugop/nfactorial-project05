@@ -203,6 +203,27 @@ def main() -> None:
     ok = code == 1 and not Path("bookings.json").exists() and task()["status"] == "new"
     results.append(own_check("справка без права брони", ok, f"код {code}"))
 
+    # Бюллетень с перепутанными слотами не проходит смысловую сверку и собирается из мира
+    folder = world(3)
+    run([READS, [call("book_venue", venue_id=HUB)]], use_skill=True)
+    steps = finish_steps()
+    a, b = ROWS[0], ROWS[1]
+    wrong = (f"[ПЛОЩАДКА]\n{HUB}\n\n[СЕТКА СЛОТОВ]\n{a['team']['id']}: ментор {b['m']}, питч {b['p']}\n"
+             f"{b['team']['id']}: ментор {a['m']}, питч {a['p']}\nКонфликтов расписания: 0\n\n"
+             "[СТАТУС РАССЫЛКИ]\nКомандам: 5 из 6, менторам: 2 из 2")
+    steps[-1] = [assistant_message(wrong)]
+    run(steps, approve=True, use_skill=True)
+    events = [json.loads(line)["event"] for line in Path("journal.jsonl").read_text(encoding="utf-8").splitlines()]
+    bulletin = task()["bulletin"]
+    ok = "bulletin_rebuilt" in events and f"{a['team']['id']} " in bulletin and "Командам: 6 из 6" in bulletin
+    results.append(own_check("неверный бюллетень пересобран из мира", ok and "PASS" in verdict(folder, 3, "with-skill")))
+
+    # Попытки кончились: failed без вызова модели
+    world(2)
+    Path("state.json").write_text(json.dumps({"status": "running", "attempts": 3}), encoding="utf-8")
+    code = run([])
+    results.append(own_check("max_attempts", code == 1 and task()["status"] == "failed", task()["status"]))
+
     print("\n".join(results))
     if not all("PASS" in r for r in results):
         raise SystemExit(1)

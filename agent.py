@@ -19,6 +19,7 @@
 import argparse
 import asyncio
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -267,18 +268,35 @@ def blocking_reason(hooks: journal.Journal) -> str | None:
     return "; ".join(dict.fromkeys(reasons)) or None
 
 
+def bulletin_errors(report: str, facts: dict) -> list[str]:
+    """Сверяю бюллетень модели с файлами мира: формат по шаблону навыка и смысл.
+    Числа и слоты в отчёте должны совпадать с тем, что реально лежит в мире."""
+    body = verify.normalize(report)
+    errors = [f"нет раздела {h}" for h in BULLETIN_HEADERS if h.lower() not in body]
+    if "конфликтов расписания: 0" not in body or facts["conflicts"] != 0:
+        errors.append("строка конфликтов не совпадает со сверкой")
+    if str(facts["venue_id"]).lower() not in body and str(facts["venue_name"]).lower() not in body:
+        errors.append("не названа забронированная площадка")
+    lines = body.splitlines()
+    for team_id, entry in world.read_schedule().items():
+        own = [line for line in lines if team_id.lower() in line]
+        slots = [verify.normalize(entry.get(k, "")) for k in ("mentor_slot", "pitch_slot")]
+        if not any(all(slot in line for slot in slots) for line in own):
+            errors.append(f"в строке команды {team_id} не её слоты")
+    for label, done, total in (("командам", "notified_teams", "teams_total"), ("менторам", "notified_mentors", "mentors_total")):
+        found = re.search(label + r":?\s*(\d+)\s*из\s*(\d+)", body)
+        if found and (int(found.group(1)), int(found.group(2))) != (facts[done], facts[total]):
+            errors.append(f"число «{label}» не совпадает с письмами")
+    return errors
+
+
 def pick_bulletin(report: str, facts: dict, skill_on: bool, task: dict) -> str:
     if not skill_on:
         return report
-    valid = (
-        all(h in report for h in BULLETIN_HEADERS)
-        and "Конфликтов расписания: 0" in report
-        and facts["conflicts"] == 0
-        and (facts["venue_id"] or "") in report
-    )
-    if valid:
+    errors = bulletin_errors(report, facts)
+    if not errors:
         return report
-    journal.write("bulletin_rebuilt", note="бюллетень модели не прошёл проверку формата, собран из файлов мира")
+    journal.write("bulletin_rebuilt", errors=errors, note="бюллетень модели не совпал с миром, собран из файлов мира")
     return verify.bulletin_from_world(task, facts)
 
 
