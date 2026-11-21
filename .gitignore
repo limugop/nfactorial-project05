@@ -1,0 +1,24 @@
+# окружение и кэши
+.venv/
+__pycache__/
+.pytest_cache/
+
+# ключи
+.env
+
+# рабочая копия fixtures/, её пересоздаёт reset.py
+/data/
+
+# состояние и внешний мир текущего прогона, у каждого запуска своё
+/.scenario.json
+/state.json
+/state.tmp
+/bookings.json
+/bookings.tmp
+/schedule.json
+/schedule.tmp
+/outbox.json
+/outbox.tmp
+/journal.jsonl
+/sessions.db
+/sessions.db-*

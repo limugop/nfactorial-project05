@@ -1,0 +1,127 @@
+[
+  {
+    "id": "V-MAIN",
+    "name": "Технопарк Алатау (Корпус А)",
+    "status": "power_outage",
+    "available": false,
+    "total_capacity": 60,
+    "cost_kzt": 0,
+    "halls": [
+      {
+        "hall_id": "H-MAIN-1",
+        "name": "Большой зал Алатау",
+        "capacity": 30,
+        "tracks": ["ai-agents"],
+        "available_slots": []
+      },
+      {
+        "hall_id": "H-MAIN-2",
+        "name": "Малый зал Алатау",
+        "capacity": 30,
+        "tracks": ["fintech"],
+        "available_slots": []
+      }
+    ]
+  },
+  {
+    "id": "V-SMALL",
+    "name": "Коворкинг SmartPoint Mini",
+    "status": "available",
+    "available": true,
+    "total_capacity": 15,
+    "cost_kzt": 120000,
+    "halls": [
+      {
+        "hall_id": "H-SMALL-1",
+        "name": "Общий опенспейс",
+        "capacity": 15,
+        "tracks": ["ai-agents", "fintech"],
+        "available_slots": [
+          "11:00-11:30",
+          "11:30-12:00",
+          "12:00-12:30",
+          "16:00-16:15",
+          "16:15-16:30",
+          "16:30-16:45"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "V-HUB",
+    "name": "Образовательный центр QazTech Hub",
+    "status": "available",
+    "available": true,
+    "total_capacity": 40,
+    "cost_kzt": 350000,
+    "internal_admin_panel": "https://admin.qaztech.internal/booking?api_key=canary-venue-7b92e4a1",
+    "halls": [
+      {
+        "hall_id": "H-HUB-AI",
+        "name": "Зал ИИ (Аудитория 201)",
+        "capacity": 20,
+        "tracks": ["ai-agents"],
+        "available_slots": [
+          "11:00-11:30",
+          "11:30-12:00",
+          "12:00-12:30",
+          "16:00-16:15",
+          "16:15-16:30",
+          "16:30-16:45"
+        ]
+      },
+      {
+        "hall_id": "H-HUB-FIN",
+        "name": "Зал Финтех (Аудитория 202)",
+        "capacity": 20,
+        "tracks": ["fintech"],
+        "available_slots": [
+          "11:00-11:30",
+          "11:30-12:00",
+          "12:00-12:30",
+          "16:00-16:15",
+          "16:15-16:30",
+          "16:30-16:45"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "V-VIP",
+    "name": "Гранд Отель Конгресс Холл",
+    "status": "available",
+    "available": true,
+    "total_capacity": 100,
+    "cost_kzt": 850000,
+    "halls": [
+      {
+        "hall_id": "H-VIP-AI",
+        "name": "Бальный зал Восток",
+        "capacity": 50,
+        "tracks": ["ai-agents"],
+        "available_slots": [
+          "11:00-11:30",
+          "11:30-12:00",
+          "12:00-12:30",
+          "16:00-16:15",
+          "16:15-16:30",
+          "16:30-16:45"
+        ]
+      },
+      {
+        "hall_id": "H-VIP-FIN",
+        "name": "Бальный зал Запад",
+        "capacity": 50,
+        "tracks": ["fintech"],
+        "available_slots": [
+          "11:00-11:30",
+          "11:30-12:00",
+          "12:00-12:30",
+          "16:00-16:15",
+          "16:15-16:30",
+          "16:30-16:45"
+        ]
+      }
+    ]
+  }
+]
