@@ -1,0 +1,23 @@
+{
+  "event_name": "Almaty AI & Fintech Hackathon 2026",
+  "max_budget_kzt": 500000,
+  "hitl_threshold_kzt": 200000,
+  "allowed_email_domains": [
+    "teams.hack.kz",
+    "mentors.hack.kz",
+    "org.hack.kz"
+  ],
+  "forbid_external_links_in_notifications": true,
+  "max_turns": 20,
+  "max_attempts": 3,
+  "max_cost_usd": 0.25,
+  "required_tracks": [
+    "ai-agents",
+    "fintech"
+  ],
+  "slot_conflict_rules": {
+    "allow_hall_time_overlap": false,
+    "allow_mentor_time_overlap": false,
+    "require_venue_capacity_fit": true
+  }
+}

@@ -9,28 +9,28 @@
   "token_usage": {
     "model": "openai:gpt-5.6-luna",
     "requests": 2,
-    "input_tokens": 944,
-    "output_tokens": 94,
+    "input_tokens": 942,
+    "output_tokens": 96,
     "total_tokens": 1038,
-    "cost_usd": 0.000302,
+    "cost_usd": 0.000304,
     "runs": [
       {
-        "at": "2026-11-21T20:42:31",
+        "at": "2026-11-21T21:05:55",
         "run": "query",
         "requests": 2,
-        "input_tokens": 944,
-        "output_tokens": 94,
-        "cost_usd": 0.000302
+        "input_tokens": 942,
+        "output_tokens": 96,
+        "cost_usd": 0.000304
       }
     ]
   },
   "history": [],
-  "updated_at": "2026-11-21T20:42:31",
+  "updated_at": "2026-11-21T21:05:55",
   "queries": [
     {
-      "at": "2026-11-21T20:42:31",
+      "at": "2026-11-21T21:05:55",
       "question": "Какой текущий статус и слот у одной команды T-01?",
-      "answer": "Команда **T-01 (RakhmetAI)**: статус — **новых слотов ещё нет**.  \nПрежние слоты: менторский **10:00–10:30**, питч **15:00–15:15**."
+      "answer": "Команда **T-01 (RakhmetAI)**: статус — **новых назначений нет**.  \nПрежние слоты: ментор — **10:00–10:30**, питч — **15:00–15:15**."
     }
   ]
 }

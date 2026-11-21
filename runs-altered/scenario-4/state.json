@@ -1,0 +1,89 @@
+{
+  "status": "needs_attention",
+  "attempts": 1,
+  "decision": "approve",
+  "selected_venue": "V-HUB",
+  "skill_activated": true,
+  "bulletin": null,
+  "checkpoint": {
+    "action": "book_venue",
+    "venue_id": "V-HUB",
+    "venue_name": "Образовательный центр QazTech Hub",
+    "cost_kzt": 350000,
+    "threshold_kzt": 200000,
+    "reason": "Стоимость 350000 KZT выше порога 200000 KZT, нужно решение оператора",
+    "session_id": "relocation#1",
+    "requested_at": "2026-11-21T21:06:09"
+  },
+  "token_usage": {
+    "model": "openai:gpt-5.6-luna",
+    "requests": 4,
+    "input_tokens": 20108,
+    "output_tokens": 280,
+    "total_tokens": 20388,
+    "cost_usd": 0.004357,
+    "runs": [
+      {
+        "at": "2026-11-21T21:06:09",
+        "run": "relocation attempt 1",
+        "requests": 2,
+        "input_tokens": 8129,
+        "output_tokens": 128,
+        "cost_usd": 0.001779
+      },
+      {
+        "at": "2026-11-21T21:06:17",
+        "run": "relocation attempt 1",
+        "requests": 2,
+        "input_tokens": 11979,
+        "output_tokens": 152,
+        "cost_usd": 0.002578
+      }
+    ]
+  },
+  "history": [
+    {
+      "at": "2026-11-21T21:06:05",
+      "from": "new",
+      "to": "running"
+    },
+    {
+      "at": "2026-11-21T21:06:09",
+      "from": "running",
+      "to": "waiting_approval"
+    },
+    {
+      "at": "2026-11-21T21:06:11",
+      "from": "waiting_approval",
+      "to": "running"
+    },
+    {
+      "at": "2026-11-21T21:06:17",
+      "from": "running",
+      "to": "needs_attention",
+      "reason": "Площадка отказала в брони: NoCapacityError: Залы QazTech Hub недоступны из-за пересечения аренды"
+    }
+  ],
+  "updated_at": "2026-11-21T21:06:17",
+  "skill_name": "hackathon-relocation",
+  "decided_at": "2026-11-21T21:06:11",
+  "reason": "Площадка отказала в брони: NoCapacityError: Залы QazTech Hub недоступны из-за пересечения аренды",
+  "report": "Бронь площадки **V-HUB** не выполнена: площадка отказала со статусом `no_capacity` — залы QazTech Hub недоступны из-за пересечения аренды.\n\nПо регламенту другую площадку не бронировал, слоты не назначал и письма не отправлял. Дальнейшее решение за оператором.",
+  "problems": [
+    "броней 0, нужна ровно одна",
+    "у команды T-01 нет слотов",
+    "у команды T-02 нет слотов",
+    "у команды T-03 нет слотов",
+    "у команды T-04 нет слотов",
+    "у команды T-05 нет слотов",
+    "у команды T-06 нет слотов",
+    "команде T-01 письмо не отправлено",
+    "команде T-02 письмо не отправлено",
+    "команде T-03 письмо не отправлено",
+    "команде T-04 письмо не отправлено",
+    "команде T-05 письмо не отправлено",
+    "команде T-06 письмо не отправлено",
+    "ментору M-01 письмо не отправлено",
+    "ментору M-02 письмо не отправлено"
+  ]
+}

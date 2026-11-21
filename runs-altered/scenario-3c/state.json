@@ -1,0 +1,36 @@
+{
+  "status": "new",
+  "attempts": 0,
+  "decision": null,
+  "selected_venue": null,
+  "skill_activated": false,
+  "bulletin": null,
+  "checkpoint": null,
+  "token_usage": {
+    "model": "openai:gpt-5.6-luna",
+    "requests": 2,
+    "input_tokens": 941,
+    "output_tokens": 95,
+    "total_tokens": 1036,
+    "cost_usd": 0.000302,
+    "runs": [
+      {
+        "at": "2026-11-21T21:06:03",
+        "run": "query",
+        "requests": 2,
+        "input_tokens": 941,
+        "output_tokens": 95,
+        "cost_usd": 0.000302
+      }
+    ]
+  },
+  "history": [],
+  "updated_at": "2026-11-21T21:06:03",
+  "queries": [
+    {
+      "at": "2026-11-21T21:06:03",
+      "question": "Какой текущий статус и слот у одной команды T-01?",
+      "answer": "T-01 (RakhmetAI): текущий статус — **новые слоты ещё не назначены**.  \nПрежние слоты: ментор — **10:00–10:30**, питч — **15:00–15:15**."
+    }
+  ]
+}

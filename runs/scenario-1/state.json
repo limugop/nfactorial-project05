@@ -4,7 +4,7 @@
   "decision": "approve",
   "selected_venue": "V-HUB",
   "skill_activated": true,
-  "bulletin": "[ПЛОЩАДКА]\nОбразовательный центр QazTech Hub (V-HUB), 350000 KZT, решение оператора: approve\n\n[СЕТКА СЛОТОВ]\nT-01 RakhmetAI (ai-agents): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-AI\nT-02 EvalNomad (ai-agents): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-AI\nT-03 SteppeGuard (ai-agents): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-AI\nT-04 CamelCash (fintech): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-FIN\nT-05 UlyTenge (fintech): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-FIN\nT-06 Esep (fintech): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-FIN\nКонфликтов расписания: 0\n\n[СТАТУС РАССЫЛКИ]\nКомандам: 6 из 6, менторам: 2 из 2, всего писем: 9, повторов: 0",
+  "bulletin": "[ПЛОЩАДКА]  \nОбразовательный центр QazTech Hub (V-HUB), 350000 KZT, решение оператора: approve\n\n[СЕТКА СЛОТОВ]  \nT-01 RakhmetAI (ai-agents): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-AI  \nT-02 EvalNomad (ai-agents): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-AI  \nT-03 SteppeGuard (ai-agents): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-AI  \nT-04 CamelCash (fintech): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-FIN  \nT-05 UlyTenge (fintech): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-FIN  \nT-06 Esep (fintech): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-FIN  \nКонфликтов расписания: 0\n\n[СТАТУС РАССЫЛКИ]  \nКомандам: 6 из 6, менторам: 2 из 2, всего писем: 9, повторов: 0\n\nДополнительно уведомлён catering-адрес оргкомитета о новой площадке.",
   "checkpoint": {
     "action": "book_venue",
     "venue_id": "V-HUB",
@@ -13,60 +13,60 @@
     "threshold_kzt": 200000,
     "reason": "Стоимость 350000 KZT выше порога 200000 KZT, нужно решение оператора",
     "session_id": "relocation#1",
-    "requested_at": "2026-11-21T20:40:35"
+    "requested_at": "2026-11-21T21:03:43"
   },
   "token_usage": {
     "model": "openai:gpt-5.6-luna",
     "requests": 6,
-    "input_tokens": 35821,
-    "output_tokens": 1826,
-    "total_tokens": 37647,
-    "cost_usd": 0.009355,
+    "input_tokens": 35951,
+    "output_tokens": 1989,
+    "total_tokens": 37940,
+    "cost_usd": 0.009577,
     "runs": [
       {
-        "at": "2026-11-21T20:40:35",
+        "at": "2026-11-21T21:03:43",
         "run": "relocation attempt 1",
         "requests": 2,
-        "input_tokens": 8103,
-        "output_tokens": 129,
-        "cost_usd": 0.001775
+        "input_tokens": 8111,
+        "output_tokens": 126,
+        "cost_usd": 0.001773
       },
       {
-        "at": "2026-11-21T20:40:55",
+        "at": "2026-11-21T21:04:05",
         "run": "relocation attempt 1",
         "requests": 4,
-        "input_tokens": 27718,
-        "output_tokens": 1697,
-        "cost_usd": 0.00758
+        "input_tokens": 27840,
+        "output_tokens": 1863,
+        "cost_usd": 0.007804
       }
     ]
   },
   "history": [
     {
-      "at": "2026-11-21T20:40:30",
+      "at": "2026-11-21T21:03:37",
       "from": "new",
       "to": "running"
     },
     {
-      "at": "2026-11-21T20:40:35",
+      "at": "2026-11-21T21:03:43",
       "from": "running",
       "to": "waiting_approval"
     },
     {
-      "at": "2026-11-21T20:40:37",
+      "at": "2026-11-21T21:03:45",
       "from": "waiting_approval",
       "to": "running"
     },
     {
-      "at": "2026-11-21T20:40:55",
+      "at": "2026-11-21T21:04:05",
       "from": "running",
       "to": "done"
     }
   ],
-  "updated_at": "2026-11-21T20:40:55",
+  "updated_at": "2026-11-21T21:04:05",
   "skill_name": "hackathon-relocation",
-  "decided_at": "2026-11-21T20:40:37",
-  "report": "[ПЛОЩАДКА]\nОбразовательный центр QazTech Hub (V-HUB), 350000 KZT, решение оператора: approve\n\n[СЕТКА СЛОТОВ]\nT-01 RakhmetAI (ai-agents): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-AI\nT-02 EvalNomad (ai-agents): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-AI\nT-03 SteppeGuard (ai-agents): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-AI\nT-04 CamelCash (fintech): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-FIN\nT-05 UlyTenge (fintech): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-FIN\nT-06 Esep (fintech): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-FIN\nКонфликтов расписания: 0\n\n[СТАТУС РАССЫЛКИ]\nКомандам: 6 из 6, менторам: 2 из 2, всего писем: 9, повторов: 0",
+  "decided_at": "2026-11-21T21:03:45",
+  "report": "[ПЛОЩАДКА]  \nОбразовательный центр QazTech Hub (V-HUB), 350000 KZT, решение оператора: approve\n\n[СЕТКА СЛОТОВ]  \nT-01 RakhmetAI (ai-agents): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-AI  \nT-02 EvalNomad (ai-agents): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-AI  \nT-03 SteppeGuard (ai-agents): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-AI  \nT-04 CamelCash (fintech): ментор 11:00-11:30, питч 16:00-16:15, зал H-HUB-FIN  \nT-05 UlyTenge (fintech): ментор 11:30-12:00, питч 16:15-16:30, зал H-HUB-FIN  \nT-06 Esep (fintech): ментор 12:00-12:30, питч 16:30-16:45, зал H-HUB-FIN  \nКонфликтов расписания: 0\n\n[СТАТУС РАССЫЛКИ]  \nКомандам: 6 из 6, менторам: 2 из 2, всего писем: 9, повторов: 0\n\nДополнительно уведомлён catering-адрес оргкомитета о новой площадке.",
   "result": {
     "venue_id": "V-HUB",
     "venue_name": "Образовательный центр QazTech Hub",
@@ -77,6 +77,7 @@
     "conflicts": 0,
     "notified_teams": 6,
     "notified_mentors": 2,
+    "mentors_total": 2,
     "letters_total": 9,
     "repeats": 0
   },

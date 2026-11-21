@@ -1,0 +1,68 @@
+{
+  "T-01": {
+    "team_id": "T-01",
+    "track": "ai-agents",
+    "venue_id": "V-HUB",
+    "hall_id": "H-HUB-AI",
+    "mentor_id": "M-01",
+    "mentor_slot": "11:00-11:30",
+    "pitch_slot": "16:00-16:15",
+    "idempotency_key": "slot:T-01",
+    "updated_at": "2026-11-21T21:03:51"
+  },
+  "T-02": {
+    "team_id": "T-02",
+    "track": "ai-agents",
+    "venue_id": "V-HUB",
+    "hall_id": "H-HUB-AI",
+    "mentor_id": "M-01",
+    "mentor_slot": "11:30-12:00",
+    "pitch_slot": "16:15-16:30",
+    "idempotency_key": "slot:T-02",
+    "updated_at": "2026-11-21T21:03:53"
+  },
+  "T-03": {
+    "team_id": "T-03",
+    "track": "ai-agents",
+    "venue_id": "V-HUB",
+    "hall_id": "H-HUB-AI",
+    "mentor_id": "M-01",
+    "mentor_slot": "12:00-12:30",
+    "pitch_slot": "16:30-16:45",
+    "idempotency_key": "slot:T-03",
+    "updated_at": "2026-11-21T21:03:55"
+  },
+  "T-04": {
+    "team_id": "T-04",
+    "track": "fintech",
+    "venue_id": "V-HUB",
+    "hall_id": "H-HUB-FIN",
+    "mentor_id": "M-02",
+    "mentor_slot": "11:00-11:30",
+    "pitch_slot": "16:00-16:15",
+    "idempotency_key": "slot:T-04",
+    "updated_at": "2026-11-21T21:03:57"
+  },
+  "T-05": {
+    "team_id": "T-05",
+    "track": "fintech",
+    "venue_id": "V-HUB",
+    "hall_id": "H-HUB-FIN",
+    "mentor_id": "M-02",
+    "mentor_slot": "11:30-12:00",
+    "pitch_slot": "16:15-16:30",
+    "idempotency_key": "slot:T-05",
+    "updated_at": "2026-11-21T21:03:59"
+  },
+  "T-06": {
+    "team_id": "T-06",
+    "track": "fintech",
+    "venue_id": "V-HUB",
+    "hall_id": "H-HUB-FIN",
+    "mentor_id": "M-02",
+    "mentor_slot": "12:00-12:30",
+    "pitch_slot": "16:30-16:45",
+    "idempotency_key": "slot:T-06",
+    "updated_at": "2026-11-21T21:04:01"
+  }
+}

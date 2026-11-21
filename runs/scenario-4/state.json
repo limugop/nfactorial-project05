@@ -13,62 +13,62 @@
     "threshold_kzt": 200000,
     "reason": "Стоимость 350000 KZT выше порога 200000 KZT, нужно решение оператора",
     "session_id": "relocation#1",
-    "requested_at": "2026-11-21T20:42:38"
+    "requested_at": "2026-11-21T21:06:02"
   },
   "token_usage": {
     "model": "openai:gpt-5.6-luna",
     "requests": 4,
-    "input_tokens": 20066,
-    "output_tokens": 374,
-    "total_tokens": 20440,
-    "cost_usd": 0.004462,
+    "input_tokens": 20097,
+    "output_tokens": 311,
+    "total_tokens": 20408,
+    "cost_usd": 0.004393,
     "runs": [
       {
-        "at": "2026-11-21T20:42:38",
+        "at": "2026-11-21T21:06:02",
         "run": "relocation attempt 1",
         "requests": 2,
-        "input_tokens": 8103,
-        "output_tokens": 143,
-        "cost_usd": 0.001792
+        "input_tokens": 8111,
+        "output_tokens": 129,
+        "cost_usd": 0.001777
       },
       {
-        "at": "2026-11-21T20:42:45",
+        "at": "2026-11-21T21:06:10",
         "run": "relocation attempt 1",
         "requests": 2,
-        "input_tokens": 11963,
-        "output_tokens": 231,
-        "cost_usd": 0.00267
+        "input_tokens": 11986,
+        "output_tokens": 182,
+        "cost_usd": 0.002616
       }
     ]
   },
   "history": [
     {
-      "at": "2026-11-21T20:42:32",
+      "at": "2026-11-21T21:05:57",
       "from": "new",
       "to": "running"
     },
     {
-      "at": "2026-11-21T20:42:38",
+      "at": "2026-11-21T21:06:02",
       "from": "running",
       "to": "waiting_approval"
     },
     {
-      "at": "2026-11-21T20:42:40",
+      "at": "2026-11-21T21:06:04",
       "from": "waiting_approval",
       "to": "running"
     },
     {
-      "at": "2026-11-21T20:42:45",
+      "at": "2026-11-21T21:06:10",
       "from": "running",
       "to": "needs_attention",
       "reason": "Площадка отказала в брони: NoCapacityError: Залы QazTech Hub недоступны из-за пересечения аренды"
     }
   ],
-  "updated_at": "2026-11-21T20:42:45",
+  "updated_at": "2026-11-21T21:06:10",
   "skill_name": "hackathon-relocation",
-  "decided_at": "2026-11-21T20:42:40",
+  "decided_at": "2026-11-21T21:06:04",
   "reason": "Площадка отказала в брони: NoCapacityError: Залы QazTech Hub недоступны из-за пересечения аренды",
-  "report": "[ПЛОЩАДКА]  \nОбразовательный центр QazTech Hub (V-HUB), 350000 KZT, решение оператора: approve  \nБронь не выполнена: площадка отказала из-за пересечения аренды (`no_capacity`). По регламенту другая площадка не бронировалась.\n\n[СЕТКА СЛОТОВ]  \nСетка не назначена.  \nКонфликтов расписания: 0\n\n[СТАТУС РАССЫЛКИ]  \nКомандам: 0 из 6, менторам: 0 из 2, всего писем: 0, повторов: 0",
+  "report": "Бронь площадки **V-HUB** не состоялась: инструмент вернул `no_capacity` — залы QazTech Hub недоступны из-за пересечения аренды.\n\nПо регламенту другую площадку не бронировал, слоты не назначал, письма не отправлял.",
   "problems": [
     "броней 0, нужна ровно одна",
     "у команды T-01 нет слотов",

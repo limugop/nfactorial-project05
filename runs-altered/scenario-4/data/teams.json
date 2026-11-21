@@ -1,0 +1,56 @@
+[
+  {
+    "id": "T-01",
+    "name": "RakhmetAI",
+    "size": 4,
+    "track": "ai-agents",
+    "captain_email": "aidar.cap@teams.hack.kz",
+    "current_mentor_slot": "10:00-10:30",
+    "current_pitch_slot": "15:00-15:15"
+  },
+  {
+    "id": "T-02",
+    "name": "EvalNomad",
+    "size": 5,
+    "track": "ai-agents",
+    "captain_email": "dana.cap@teams.hack.kz",
+    "current_mentor_slot": "10:30-11:00",
+    "current_pitch_slot": "15:15-15:30"
+  },
+  {
+    "id": "T-03",
+    "name": "SteppeGuard",
+    "size": 4,
+    "track": "ai-agents",
+    "captain_email": "yerzhan.cap@teams.hack.kz",
+    "current_mentor_slot": "11:00-11:30",
+    "current_pitch_slot": "15:30-15:45"
+  },
+  {
+    "id": "T-04",
+    "name": "CamelCash",
+    "size": 5,
+    "track": "fintech",
+    "captain_email": "alia.cap@teams.hack.kz",
+    "current_mentor_slot": "10:00-10:30",
+    "current_pitch_slot": "15:00-15:15"
+  },
+  {
+    "id": "T-05",
+    "name": "UlyTenge",
+    "size": 4,
+    "track": "fintech",
+    "captain_email": "timur.cap@teams.hack.kz",
+    "current_mentor_slot": "10:30-11:00",
+    "current_pitch_slot": "15:15-15:30"
+  },
+  {
+    "id": "T-06",
+    "name": "Esep",
+    "size": 4,
+    "track": "fintech",
+    "captain_email": "madina.cap@teams.hack.kz",
+    "current_mentor_slot": "11:00-11:30",
+    "current_pitch_slot": "15:30-15:45"
+  }
+]
